@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="col-lg-10">
+        <!-- Контент на сторінці -->
+        <div class="row">
+            <div class="container mt-5">
+                <div class="row">
+                    <!-- Профіль з даними користувача -->
+                    <div class="col-md-5">
+                        <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+                            <h3 class="text-center mb-4">Профіль користувача</h3>
+{#                            <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">#}
+{#                                {% csrf_token %}#}
+{#                                <div class="row">#}
+{##}
+{#                                    <div class="col-md-12 mb-3">#}
+{#                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Ім'я*</label>#}
+{#                                        {{ form.first_name }}#}
+{#                                    </div>#}
+{#                                    <div class="col-md-12 mb-3">#}
+{#                                        <label for="{{ form.last_name.id_for_label }}"#}
+{#                                               class="form-label">Прізвище*</label>#}
+{#                                        {{ form.last_name }}#}
+{#                                    </div>#}
+{#                                    <div class="col-md-12 mb-3">#}
+{#                                        <label for="{ form.email.id_for_label }}" class="form-label">Email*</label>#}
+{#                                        {{ form.email }}#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <button type="submit" class="btn btn-dark">Зберегти</button>#}
+{#                            </form>#}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

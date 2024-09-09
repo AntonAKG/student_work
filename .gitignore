@@ -1,0 +1,8 @@
+# created by virtualenv automatically
+
+.venv/
+.venv
+db.sqlite3
+identifier.sqlite
+
+media/
