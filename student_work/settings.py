@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'account.User'
 
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = 'profile'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'save_work.apps.SaveWorkConfig'
 ]
 
 MIDDLEWARE = [
