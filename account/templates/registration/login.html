@@ -18,13 +18,16 @@
                             {{ form.password }}
                         </div>
                         <button type="submit" class="btn btn-dark btn-block">Війти</button>
+                        <p>{{ form.error }}</p>
+                        
                     </form>
                     <div class="mt-3">
                         <a href="{% url 'password_change' %}">Забули пароль?</a> | <a href="{% url 'register' %}">Створити акаунт</a>
                     </div>
                     <hr>
+                    
                     <div class="text-center">
-                        <p>Або авторизуйтеся через:</p>
+                        <p>Або авторизуйтесь через:</p>
                         <a href="#" class="btn btn-dark">
                             <img class="mx-1" src="{% static 'deps/icons/google.svg' %}" alt="Catalog Icon" width="16"
                                  height="16">

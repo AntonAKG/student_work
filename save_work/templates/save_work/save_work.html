@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	
+    <div class="row">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 bg-white p-4 mb-5 mx-2 rounded custom-shadow">
+                <h2 class="text-center mb-4">Save work</h2>
+                <form action="{% url 'save_work' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form }}
+                    
+                    <button type="submit" style="margin-top: 10px;"
+                        class="btn btn-dark btn-block">Завантажити</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}
