@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'account.apps.AccountConfig',
-    'save_work.apps.SaveWorkConfig'
+    'save_work.apps.SaveWorkConfig',
+    'teacher_panel.apps.TeacherPanelConfig'
 ]
 
 MIDDLEWARE = [
@@ -129,9 +131,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
     ]
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

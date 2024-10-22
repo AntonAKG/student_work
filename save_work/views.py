@@ -20,6 +20,7 @@ class SaveWorkView(View):
         if form.is_valid():
             # Отримуємо студента із поточного користувача
             student = Student.objects.get(student=request.user)
+            group_ = student.group
 
             # Отримуємо об'єкти із форми
             type = form.cleaned_data['type']  # Це вже об'єкт Subject
@@ -33,6 +34,7 @@ class SaveWorkView(View):
                 type=type,
                 teacher=teacher,  # Використовуємо екземпляр Teacher, а не ID
                 work=work,
+                group=group_,
                 date_joined=timezone.now()
             )
             student_work.save()

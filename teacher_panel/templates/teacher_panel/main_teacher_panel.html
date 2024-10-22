@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-9 bg-white p-4 mb-5 mx-2 rounded custom-shadow">
+
+                    <!-- Форма для фільтрації робіт за групою -->
+                    <form method="GET" class="mb-4">
+                        <select name="group_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">Всі групи</option>
+                            {% for group in groups %}
+                                <!-- Перевіряємо, чи група вибрана, щоб залишити її вибраною після фільтрації -->
+                                <option value="{{ group.id }}"
+                                        {% if request.GET.group_id == group.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ group.group_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+
+
+                    <!-- Виведення робіт студентів -->
+                    {% for el in student_work %}
+                        <div class="student-info mb-4 p-3">
+                            <h3 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h3>
+                            <p class="student-group">Група: {{ el.student.group }}</p>
+                            <p class="date-joined">Дата приєднання: {{ el.date_joined }}</p>
+                            <div class="work-content mb-3">{{ el.work }}</div>
+                            <a href="{{ el.work.url }}" class="btn-download" download>Завантажити</a>
+                        </div>
+                    {% empty %}
+                        <p>Немає робіт для цієї групи.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-info {
+            background-color: #f9f9fb;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .student-info:hover {
+            transform: translateY(-5px);
+        }
+
+        .student-name {
+            font-size: 1.5rem;
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .student-group, .date-joined {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .work-content {
+            font-size: 1.1rem;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 10px;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        .form-select {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .form-select:focus {
+            border-color: #007bff;
+        }
+
+
+    </style>
+
+{% endblock %}

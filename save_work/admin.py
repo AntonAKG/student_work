@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Student, Teacher, StudentWork, Subject
+from .models import Student, Teacher, StudentWork, Subject, Group
 
 
 @admin.register(Student)
@@ -21,3 +21,9 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(StudentWork)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('student', 'teacher', 'type', 'date_joined')
+
+
+@admin.register(Group)
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('group_name',)
+
