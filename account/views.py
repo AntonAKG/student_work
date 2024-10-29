@@ -3,12 +3,13 @@ from audioop import reverse
 from django.contrib.auth import authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 from django.contrib.auth import login
 
 from .forms import LoginForm, RegisterForm, UserProfileForm
+from save_work.models import Student, Teacher, StudentWork
 
 
 class LoginClassView(LoginView):
@@ -46,8 +47,32 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+        # Знаходимо запис студента, пов’язаний з цим користувачем
+        student = getattr(user, 'student', None)
+        if student:
+            works = StudentWork.objects.filter(student=student)
+        else:
+            works = []
+
+        # Отримуємо всі роботи студента
+
+        # перевірка на тип користувача
+        def get_user_type(user_id):
+            if Student.objects.filter(student_id=user_id).exists():
+                return "Student"
+            elif Teacher.objects.filter(teacher_id=user_id).exists():
+                return "Teacher"
+            else:
+                return "Unknown"
+
+
         context["title"] = "Profile"
         context["form"] = UserProfileForm(instance=self.request.user)
+        context["role"] = get_user_type(self.request.user.id)
+        context['work'] = works
+
         return context
 
     def post(self, request, *args, **kwargs):

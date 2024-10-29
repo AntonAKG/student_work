@@ -20,18 +20,25 @@ class TeacherView(UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Отримуємо ID групи з параметрів GET
+        search_query = self.request.GET.get('search', '')
+
         group_id = self.request.GET.get('group_id')
 
         if group_id:
-            # Якщо вибрано групу, фільтруємо роботи за нею
-            context['student_work'] = StudentWork.objects.filter(group_id=group_id)
+            student_work = StudentWork.objects.filter(group_id=group_id)
         else:
-            # Якщо група не вибрана, відображаємо всі роботи
-            context['student_work'] = StudentWork.objects.all()
+            student_work = StudentWork.objects.all()
 
-        # Передаємо всі групи для фільтрації
+        if search_query:
+            student_work = student_work.filter(
+                student__student__first_name__icontains=search_query
+            ) | student_work.filter(
+                student__student__last_name__icontains=search_query
+            )
+
+        context['student_work'] = student_work
         context['groups'] = Group.objects.all()
-        print(Group.objects.all())
+        context['search_query'] = search_query
 
         return context
+

@@ -8,10 +8,15 @@
 
                     <!-- Форма для фільтрації робіт за групою -->
                     <form method="GET" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Пошук по студентам..."
+                                   value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit">Пошук</button>
+                        </div>
+
                         <select name="group_id" class="form-select" onchange="this.form.submit()">
                             <option value="">Всі групи</option>
                             {% for group in groups %}
-                                <!-- Перевіряємо, чи група вибрана, щоб залишити її вибраною після фільтрації -->
                                 <option value="{{ group.id }}"
                                         {% if request.GET.group_id == group.id|stringformat:"s" %}selected{% endif %}>
                                     {{ group.group_name }}
@@ -115,6 +120,20 @@
 
         .form-select:focus {
             border-color: #007bff;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0.25rem;
+            padding: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 1rem;
         }
 
 
