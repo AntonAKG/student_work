@@ -28,8 +28,10 @@
             <div class="col-md-8 bg-white p-4 rounded custom-shadow">
                 <h3 class="text-center mb-4">Роботи студента</h3>
 
+                 {% if role == "Student" %}
+    <a href="{% url 'download_student_works' %}" class="btn btn-primary">Завантажити всі роботи</a>
+{% endif %}
                 
-
                 <!-- Виведення робіт студента -->
                 {% for el in work %}
                     <div class="student-info mb-4 p-3">
