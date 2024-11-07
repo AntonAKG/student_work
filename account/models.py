@@ -1,5 +1,4 @@
 from django.utils import timezone
-
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -8,22 +7,22 @@ from django.utils.translation import gettext as _
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, username, password=None, **extra_fields):
         """
-        Creates and saves a User with the given email and password.
+        Creates and saves a User with the given username and password.
         """
-        if not email:
-            raise ValueError("Users must have an email address")
+        if not username:
+            raise ValueError("Users must have a username")
 
-        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user = self.model(username=username, **extra_fields)
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, username, password=None, **extra_fields):
         """
-        Creates and saves a superuser with the given email and password.
+        Creates and saves a superuser with the given username and password.
         """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -33,15 +32,16 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(email, password, **extra_fields)
+        return self.create_user(username, password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    Custom user model with email as the unique identifier
+    Custom user model with username as the unique identifier
     """
 
-    email = models.EmailField(_("email address"), unique=True)
+    username = models.CharField(_("username"), unique=True, max_length=150)
+    email = models.EmailField(_("email address"), unique=True, blank=True, null=True)
     first_name = models.CharField(_("first name"), max_length=30, blank=True)
     last_name = models.CharField(_("last name"), max_length=30, blank=True)
     phone_number = models.CharField(
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
     class Meta:

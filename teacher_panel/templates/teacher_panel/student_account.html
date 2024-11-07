@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-9 bg-white p-4 mb-5 rounded custom-shadow">
+
+                    <form method="GET" class="mb-4">
+                    <select name="subject_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">Всі предмети</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.id }}" {% if request.GET.subject_id == subject.id|stringformat:"s" %}selected{% endif %}>{{ subject.subject }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select name="sort_order" class="form-select" onchange="this.form.submit()">
+                        <option value="newest" {% if current_sort_order == 'newest' %}selected{% endif %}>Найновіші</option>
+                        <option value="oldest" {% if current_sort_order == 'oldest' %}selected{% endif %}>Найстаріші</option>
+                    </select>
+                </form>
+            
+                <a href="{% url 'download_student_works_zip' slug=student.slug %}" class="btn btn-primary mb-4">
+                    Download All Works
+                </a>
+
+                {% for el in save_work_student %}
+                    <div class="student-info mb-4 p-3 rounded border-left-primary">
+                        <h3 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h3>
+                        <p class="student-group">Група: {{ el.group }}</p>
+                        <p class="student-group">Предмет: {{ el.type }}</p>
+                        <p class="date-joined">Дата завантаження: {{ el.date_joined }}</p>
+                        <div class="work-content mb-3">{{ el.work }}</div>
+                        <a href="{{ el.work.url }}" class="btn-download" download>Завантажити</a>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">Немає робіт</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-info {
+            background-color: #f9f9fb;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            border-left: 4px solid #007bff;
+        }
+
+        .student-info:hover {
+            transform: translateY(-5px);
+        }
+
+        .student-name {
+            font-size: 1.5rem;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .student-group, .date-joined {
+            color: #666;
+        }
+
+        .work-content {
+            font-size: 1rem;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        .form-select {
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .form-select:focus {
+            border-color: #007bff;
+        }
+    </style>
+{% endblock %}

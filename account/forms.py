@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class LoginForm(AuthenticationForm):
         :param kwargs:
         """
         super().__init__(*args, **kwargs)
-        self.fields['username'].widget = forms.widgets.EmailInput(attrs={
+        self.fields['username'].widget = forms.widgets.TextInput(attrs={
             'class': 'form-control', 'placeholder': 'Електрона адреса'
         })
         self.fields['username'].label = ''
@@ -32,9 +32,9 @@ class LoginForm(AuthenticationForm):
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(label='', required=True, widget=forms.EmailInput(attrs={
+    username = forms.CharField(label='', required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Email'
+        'placeholder': 'Login'
     }))
 
     password1 = forms.CharField(label='', widget=forms.PasswordInput(attrs={
@@ -59,4 +59,14 @@ class RegisterForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['email', 'password1', 'password2', 'first_name', 'last_name']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name']
+
+
+class UserProfileForm(UserChangeForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username')

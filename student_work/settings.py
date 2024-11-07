@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
 
 from pathlib import Path
+from token import ENCODING
+
+from django.conf.global_settings import LOGOUT_REDIRECT_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +33,12 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'account.User'
 
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = 'profile'
+LOGOUT_REDIRECT_URL = 'index'
+
+ENCODING = 'utf-8'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'save_work.apps.SaveWorkConfig',
+    'teacher_panel.apps.TeacherPanelConfig'
 ]
 
 MIDDLEWARE = [
@@ -78,9 +90,12 @@ WSGI_APPLICATION = 'student_work.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "app",
+        "USER": "postgres",
+        "PASSWORD": "1801",
+        "HOST": "localhost",
     }
 }
 
@@ -107,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
 
 TIME_ZONE = 'UTC'
 
@@ -125,9 +140,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
     ]
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

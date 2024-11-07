@@ -1,41 +1,116 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block content %}
-    <div class="col-lg-10">
-        <!-- Контент на сторінці -->
-        <div class="row">
-            <div class="container mt-5">
-                <div class="row">
-                    <!-- Профіль з даними користувача -->
-                    <div class="col-md-5">
-                        <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
-                            <h3 class="text-center mb-4">Профіль користувача</h3>
-{#                            <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">#}
-{#                                {% csrf_token %}#}
-{#                                <div class="row">#}
-{##}
-{#                                    <div class="col-md-12 mb-3">#}
-{#                                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Ім'я*</label>#}
-{#                                        {{ form.first_name }}#}
-{#                                    </div>#}
-{#                                    <div class="col-md-12 mb-3">#}
-{#                                        <label for="{{ form.last_name.id_for_label }}"#}
-{#                                               class="form-label">Прізвище*</label>#}
-{#                                        {{ form.last_name }}#}
-{#                                    </div>#}
-{#                                    <div class="col-md-12 mb-3">#}
-{#                                        <label for="{ form.email.id_for_label }}" class="form-label">Email*</label>#}
-{#                                        {{ form.email }}#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <button type="submit" class="btn btn-dark">Зберегти</button>#}
-{#                            </form>#}
-                        </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <!-- Секція профілю користувача -->
+            <div class="col-md-4 bg-white p-4 rounded custom-shadow mb-5">
+                <h3 class="text-center mb-4">Профіль користувача</h3>
+                <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">Ім'я</label>
+                        {{ form.first_name }}
                     </div>
-                    
-                </div>
+                    <div class="mb-3">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Прізвище</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Email</label>
+                        {{ form.username }}
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">Зберегти</button>
+                </form>
+            </div>
+
+            <!-- Секція зі студентськими роботами -->
+            <div class="col-md-8 bg-white p-4 rounded custom-shadow">
+                <h3 class="text-center mb-4">Роботи студента</h3>
+
+                 {% if role == "Student" %}
+    <a href="{% url 'download_student_works' %}" style="margin-block-end: 10px" class="btn btn-primary">Завантажити всі роботи</a>
+{% endif %}
+                
+                <!-- Виведення робіт студента -->
+                {% for el in work %}
+                    <div class="student-info mb-4 p-3">
+                        <h4 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h4>
+                        <p class="student-group">Група: {{ el.group.group_name }}</p>
+                        <p class="student-group">Предмет: {{ el.type }}</p>
+                        <p class="date-joined">Дата завантаження: {{ el.date_joined }}</p>
+                        <div class="work-content mb-3">{{ el.work }}</div>
+                        <a href="{{ el.work.url }}" class="btn-download" download>Завантажити роботу</a>
+                    </div>
+                {% empty %}
+                    <p>Немає робіт</p>
+                {% endfor %}
             </div>
         </div>
     </div>
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-info {
+            background-color: #f9f9fb;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .student-info:hover {
+            transform: translateY(-5px);
+        }
+
+        .student-name {
+            font-size: 1.25rem;
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .student-group, .date-joined {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .work-content {
+            font-size: 1.1rem;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 10px;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+        
+    </style>
 {% endblock %}

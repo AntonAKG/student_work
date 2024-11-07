@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,8 +43,12 @@
                         </ul>
                     </li>
                 
-                    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="#">Корзина</a></li>
-                    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="#">Погода</a></li>
+                    {% if not user.is_authenticated %}
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="{% url 'login' %}">Завантажити роботу</a></li>
+                    {% else %}
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="{% url 'save_work' %}">Завантажити роботу</a></li>
+                    {% endif %}
+                    
                     {% if not user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="{% url 'login' %}">Увійти</a>
@@ -55,14 +60,19 @@
                                 Мій профіль
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="#">Кошик</a></li>
-                                <li><a class="dropdown-item  text-white" href="#">Особистий
+                                <li><a class="dropdown-item  text-white" href="{% url 'profile' %}">Особистий
                                     кабінет</a>
                                 </li>
                                 {% if user.is_admin or user.is_staff %}
                                     <li><a class="dropdown-item  text-white" target="_blank"
                                            href="{% url "admin:index" %}">Адмін
                                         панель</a></li>
+                                {% endif %}
+                            
+                                {% if user.is_admin or user.is_staff %}
+                                    <li><a class="dropdown-item  text-white" target="_blank"
+                                           href="{% url "teacher_panel" %}">Вчительська панель
+                                        </a></li>
                                 {% endif %}
                                 <li>
                                     <hr class="dropdown-divider">
@@ -82,102 +92,7 @@
     </nav>
 </header>
     <section>
-        <div class="container">
-            <!-- Каталог и корзина с фиксированным расположением на странице -->
-            <div class="row mt-1 position-fixed z-3">
-                <!-- Каталог -->
-                <div class="dropdown mb-2">
-                    <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Предмет
-                        <img class="mx-1" src="{% static 'deps/icons/grid-fill.svg' %}" alt="Catalog Icon" width="16"
-                            height="16">
-                    </button>
-                    <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Все товары</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Кухня</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Спальня</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Гостинная</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Офис</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Фурнитура</a></li>
-                        <li><a class="dropdown-item text-white" href="goods/catalog.html">Декор</a></li>
-                    </ul>
-                </div>
-                <!-- Значек корзины, вызывает модальное окно -->
-                <div>
-                    <button type="button" class="btn btn-dark btn-secondary d-flex" id="modalButton"
-                        aria-expanded="false">
-                        <img class="mx-1" src="{% static 'deps/icons/basket2-fill.svg' %}" alt="Catalog Icon" width="24"
-                            height="24">
-                        <span id="goods-in-cart-count">0</span>
-                    </button>
-                </div>
-                <!-- Разметка модального окна корзины -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <h3 class="text-center mb-4">Корзина</h3>
-                                <div class="container" id="cart-items-container">
-                                    <!-- Разметка корзины -->
-                                    <div class="card mb-3 text-bg-light shadow-lg">
-                                        <div class="card-header">
-                                            <h5 class="card-title">Товар</h5>
-                                        </div>
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">
-                                                <div class="row text-center">
-                                                    <div class="col p-0">
-                                                        <div class="input-group">
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn-dark btn-sm decrement"
-                                                                    data-cart-id="" data-cart-change-url="">-</button>
-                                                            </span>
-                                                            <input type="text" class="form-control number" value="1"
-                                                                readonly>
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn-dark btn-sm increment"
-                                                                    data-cart-id="" data-cart-change-url="">+</button>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col p-0">
-                                                        <p>x 100.00 = </p>
-                                                    </div>
-                                                    <div class="col p-0"><strong>100.00 $</strong></div>
-                                                    <div class="col p-0">
-                                                        <a href="#" class="remove-from-cart" data-cart-id="">
-                                                            <img class="mx-1" src="{% static 'deps/icons/trash3-fill.svg' %}"
-                                                                alt="Catalog Icon" width="16" height="16">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="card mb-3 shadow-lg">
-                                        <div class="card-footer">
-                                            <p class="float-left">Итого <strong>1</strong> товар(а) на сумму</p>
-                                            <h4 class="float-left"><strong>100.00 $</strong></h4>
-                                        </div>
-                                    </div>
-                                    <!-- Закончилась разметка корзины -->
-                                </div>
-                                <a class="btn btn-dark" href="orders/create_order.html">
-                                    Оформить заказ
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Закончилась разметка модального окна -->
-            </div>
-        </div>
+        
         <!-- Контент -->
         <div class="container">
             <div class="row mt-1">
