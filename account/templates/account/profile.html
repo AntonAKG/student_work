@@ -17,8 +17,8 @@
                         {{ form.last_name }}
                     </div>
                     <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
-                        {{ form.email }}
+                        <label for="{{ form.username.id_for_label }}" class="form-label">Email</label>
+                        {{ form.username }}
                     </div>
                     <button type="submit" class="btn btn-dark w-100">Зберегти</button>
                 </form>
@@ -29,7 +29,7 @@
                 <h3 class="text-center mb-4">Роботи студента</h3>
 
                  {% if role == "Student" %}
-    <a href="{% url 'download_student_works' %}" class="btn btn-primary">Завантажити всі роботи</a>
+    <a href="{% url 'download_student_works' %}" style="margin-block-end: 10px" class="btn btn-primary">Завантажити всі роботи</a>
 {% endif %}
                 
                 <!-- Виведення робіт студента -->
@@ -37,7 +37,8 @@
                     <div class="student-info mb-4 p-3">
                         <h4 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h4>
                         <p class="student-group">Група: {{ el.group.group_name }}</p>
-                        <p class="date-joined">Дата приєднання: {{ el.date_joined }}</p>
+                        <p class="student-group">Предмет: {{ el.type }}</p>
+                        <p class="date-joined">Дата завантаження: {{ el.date_joined }}</p>
                         <div class="work-content mb-3">{{ el.work }}</div>
                         <a href="{{ el.work.url }}" class="btn-download" download>Завантажити роботу</a>
                     </div>

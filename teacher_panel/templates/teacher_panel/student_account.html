@@ -26,9 +26,9 @@
                 {% for el in save_work_student %}
                     <div class="student-info mb-4 p-3 rounded border-left-primary">
                         <h3 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h3>
-                        <p class="student-group">Group: {{ el.group }}</p>
-                        <p class="student-group">Type: {{ el.type }}</p>
-                        <p class="date-joined">Joined on: {{ el.date_joined }}</p>
+                        <p class="student-group">Група: {{ el.group }}</p>
+                        <p class="student-group">Предмет: {{ el.type }}</p>
+                        <p class="date-joined">Дата завантаження: {{ el.date_joined }}</p>
                         <div class="work-content mb-3">{{ el.work }}</div>
                         <a href="{{ el.work.url }}" class="btn-download" download>Завантажити</a>
                     </div>

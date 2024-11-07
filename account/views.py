@@ -15,7 +15,6 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
 from save_work.models import Student, Teacher, StudentWork
-from teacher_panel.views import DownloadStudentWorksZipView
 from .forms import LoginForm, RegisterForm, UserProfileForm
 
 
@@ -41,9 +40,9 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        email = form.cleaned_data.get("email")
+        username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password1")
-        user = authenticate(self.request, email=email, password=password)
+        user = authenticate(self.request, username=username, password=password)
 
         if user:
             login(self.request, user)
@@ -94,17 +93,14 @@ class DownloadWorksView(LoginRequiredMixin, View):
         if not student:
             return HttpResponse("Student works not found.", status=404)
 
-        # Створення архіву
         zip_filename = f"{user.first_name} {user.last_name}_works.zip"
         zip_path = os.path.join(settings.MEDIA_ROOT, zip_filename)
         with zipfile.ZipFile(zip_path, 'w') as zip_file:
             works = StudentWork.objects.filter(student=student)
             for work in works:
-                # Переконайтесь, що шлях work.file вказує на файл
                 work_path = work.work.path
                 zip_file.write(work_path, os.path.basename(work_path))
 
-        # Повертаємо архів як HTTP-відповідь
         with open(zip_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/zip')
             response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'

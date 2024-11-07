@@ -23,6 +23,16 @@
                                 </option>
                             {% endfor %}
                         </select>
+
+                        <select name="subject" class="form-select" onchange="this.form.submit()">
+                            <option value="">Всі предмети</option>
+                            {% for subject in subjects %}
+                                <option value="{{ subject.id }}"
+                                        {% if request.GET.subject == subject.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ subject.subject }}
+                                </option>
+                            {% endfor %}
+                        </select>
                     </form>
 
 
@@ -32,6 +42,7 @@
                             <h3 class="student-name">{{ el.student.student.first_name }} {{ el.student.student.last_name }}</h3>
                             <a href="{% url 'teacher_personal' slug=el.student.slug %}">Посилання на акаунт</a>
                             <p class="student-group">Група: {{ el.student.group }}</p>
+                            <p class="student-group">Предмет: {{ el.type }}</p>
                             <p class="date-joined">Дата приєднання: {{ el.date_joined }}</p>
                             <div class="work-content mb-3">{{ el.work }}</div>
                             <a href="{{ el.work.url }}" class="btn-download" download>Завантажити</a>

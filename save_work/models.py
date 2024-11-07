@@ -28,7 +28,7 @@ class Student(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.student.email.split('@')[0])  # Наприклад, використовуємо частину email до "@"
+            self.slug = slugify(self.student.username.split('@')[0])  # Наприклад, використовуємо частину email до "@"
             original_slug = self.slug
             for i in range(1, 1000):
                 if not Student.objects.filter(slug=self.slug).exists():

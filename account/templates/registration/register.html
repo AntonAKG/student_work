@@ -32,13 +32,13 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="id_email" class="form-label">Email*</label>
-                            <input type="email" class="form-control" id="id_email"
-                                value="{% if form.email.value %}{{ form.email.value }}{% endif %}"
-                                name="email"
-                                placeholder="Введіть ваш email" required>
-                                {% if form.email.errors %}
-                                <div class="alert alert-danger alert-dismissible fade show">{{form.email.errors}}</div>
+                            <label for="id_email" class="form-label">Username*</label>
+                            <label for="id_username"></label><input type="text" class="form-control" id="id_username"
+                                                                    value="{% if form.username.value %}{{ form.username.value }}{% endif %}"
+                                                                    name="username"
+                                                                    placeholder="Введіть ваш username" required>
+                                {% if form.username.errors %}
+                                <div class="alert alert-danger alert-dismissible fade show">{{form.username.errors}}</div>
                                 {% endif %}
                         </div>
                         <div class="col-md-6 mb-3">

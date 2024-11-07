@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 
 from pathlib import Path
+from token import ENCODING
 
 from django.conf.global_settings import LOGOUT_REDIRECT_URL
 
@@ -35,6 +36,8 @@ AUTH_USER_MODEL = 'account.User'
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'index'
+
+ENCODING = 'utf-8'
 
 # Application definition
 
@@ -87,9 +90,12 @@ WSGI_APPLICATION = 'student_work.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "app",
+        "USER": "postgres",
+        "PASSWORD": "1801",
+        "HOST": "localhost",
     }
 }
 

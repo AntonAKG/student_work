@@ -28,13 +28,16 @@ class TeacherView(UserPassesTestMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         search_query = self.request.GET.get('search', '')
-
         group_id = self.request.GET.get('group_id')
+        subject_id = self.request.GET.get('subject')
+
+        student_work = StudentWork.objects.all()
 
         if group_id:
-            student_work = StudentWork.objects.filter(group_id=group_id)
-        else:
-            student_work = StudentWork.objects.all()
+            student_work = student_work.filter(group_id=group_id)
+
+        if subject_id:
+            student_work = student_work.filter(type_id=subject_id)
 
         if search_query:
             student_work = student_work.filter(
@@ -45,6 +48,7 @@ class TeacherView(UserPassesTestMixin, TemplateView):
 
         context['student_work'] = student_work
         context['groups'] = Group.objects.all()
+        context['subjects'] = Subject.objects.all()  # Fetch all subjects
         context['search_query'] = search_query
 
         return context
