@@ -42,13 +42,31 @@
                             <li><a class="dropdown-item  text-white" href="#">Про нас</a></li>
                         </ul>
                     </li>
-                
                     {% if not user.is_authenticated %}
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="{% url 'login' %}">Завантажити роботу</a></li>
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white"
+                                                         href="{% url 'login' %}">Завантажити роботу</a></li>
                     {% else %}
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white" href="{% url 'save_work' %}">Завантажити роботу</a></li>
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white"
+                                                         href="{% url 'save_work' %}">Завантажити роботу</a></li>
                     {% endif %}
-                    
+
+
+                    {% if user.is_admin or user.is_staff %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Вчительська панель
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item text-white" target="_blank"
+                                       href="{% url 'teacher_panel' %}">Головна</a></li>
+                                <li><a class="dropdown-item text-white" target="_blank"
+                                       href="#">Звіти</a></li>
+                                <li><a class="dropdown-item text-white" target="_blank"
+                                       href="#">Налаштування</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
                     {% if not user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="{% url 'login' %}">Увійти</a>
@@ -68,12 +86,8 @@
                                            href="{% url "admin:index" %}">Адмін
                                         панель</a></li>
                                 {% endif %}
-                            
-                                {% if user.is_admin or user.is_staff %}
-                                    <li><a class="dropdown-item  text-white" target="_blank"
-                                           href="{% url "teacher_panel" %}">Вчительська панель
-                                        </a></li>
-                                {% endif %}
+
+
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -91,31 +105,31 @@
         </div>
     </nav>
 </header>
-    <section>
-        
-        <!-- Контент -->
-        <div class="container">
-            <div class="row mt-1">
-                <div class="col-lg-2">
-                    <!-- Пустой блок на Ваше усмотрение -->
-                </div>
-                <div class="col-lg-10">
-                    {% block content %}
-                    	
-                    {% endblock %}
-                </div>
+<section>
+
+    <!-- Контент -->
+    <div class="container">
+        <div class="row mt-1">
+            <div class="col-lg-2">
+                <!-- Пустой блок на Ваше усмотрение -->
+            </div>
+            <div class="col-lg-10">
+                {% block content %}
+
+                {% endblock %}
             </div>
         </div>
-    </section>
-    <footer class="py-4 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Anton 2024</p>
-        </div>
-    </footer>
-    <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
-    <script src="{% static 'deps/js/jquery-events.js' %}"></script>
-    <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
-    <script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    </div>
+</section>
+<footer class="py-4 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Anton 2024</p>
+    </div>
+</footer>
+<script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
+<script src="{% static 'deps/js/jquery-events.js' %}"></script>
+<script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
+<script src="{% static 'deps/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
 </body>
 
 </html>
