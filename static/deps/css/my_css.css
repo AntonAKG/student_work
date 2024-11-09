@@ -1,12 +1,11 @@
 body {
-  background-image: url("../images/bg-image.jpg");
+  background-image: url("../images/ITSTEP for DEV_1920x1282-000066.png");
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: center center;
-  background-size: cover;
-  height: 100%;
+  background-position: center;
+  background-size: contain; /* Масштабувати картинку, щоб вона повністю помістилася */
+  min-height: 100vh;
 }
-
 .dropdown-toggle::after {
   content: none;
 }
@@ -36,3 +35,32 @@ body {
   border-radius: 15px;
   font-size: 0.7rem;
 }
+
+/* Header */
+.navbar {
+    padding: 10px 20px;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
+    color: #fff;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #00aaff;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+

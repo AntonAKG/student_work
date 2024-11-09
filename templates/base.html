@@ -9,94 +9,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'deps/css/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'deps/css/my_css.css' %}">
-    <!-- Стиль footer-a для главной страницы -->
     <link rel="stylesheet" href="{% static 'deps/css/my_footer_css.css' %}">
-    <!-- Favicons for different platforms -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/favicon/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'deps/images/ITSTEP for DEV_180x180-000033.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/images/ITSTEP for DEV_32x32-000033.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/images/ITSTEP for DEV_16x16-000066.png' %}">
     <link rel="manifest" href="{% static 'deps/favicon/site.webmanifest' %}">
     <title>Home</title>
 </head>
 
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">Home</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+                <img src="{% static 'deps/images/ITSTEP for DEV_180x180-0000cc.png' %}" alt="Logo" width="50" height="50" class="me-2">
+                <span class="text-white">Home</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Інформація
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item  text-white" href="#">Доставка и оплата</a></li>
-                            <li><a class="dropdown-item  text-white" href="#">Контактна інформація</a></li>
-                            <li><a class="dropdown-item  text-white" href="#">Про нас</a></li>
+                            <li><a class="dropdown-item" href="#">Доставка і оплата</a></li>
+                            <li><a class="dropdown-item" href="#">Контактна інформація</a></li>
+                            <li><a class="dropdown-item" href="#">Про нас</a></li>
                         </ul>
                     </li>
                     {% if not user.is_authenticated %}
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white"
-                                                         href="{% url 'login' %}">Завантажити роботу</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'login' %}">Завантажити роботу</a></li>
                     {% else %}
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle text-white"
-                                                         href="{% url 'save_work' %}">Завантажити роботу</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'save_work' %}">Завантажити роботу</a></li>
                     {% endif %}
-
 
                     {% if user.is_admin or user.is_staff %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Вчительська панель
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item text-white" target="_blank"
-                                       href="{% url 'teacher_panel' %}">Головна</a></li>
-                                <li><a class="dropdown-item text-white" target="_blank"
-                                       href="#">Звіти</a></li>
-                                <li><a class="dropdown-item text-white" target="_blank"
-                                       href="#">Налаштування</a></li>
+                                <li><a class="dropdown-item" href="{% url 'teacher_panel' %}">Головна</a></li>
+                                <li><a class="dropdown-item" href="#">Звіти</a></li>
+                                <li><a class="dropdown-item" href="#">Налаштування</a></li>
                             </ul>
                         </li>
                     {% endif %}
                     {% if not user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link  text-white" href="{% url 'login' %}">Увійти</a>
+                            <a class="nav-link text-white" href="{% url 'login' %}">Увійти</a>
                         </li>
                     {% else %}
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Мій профіль
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="{% url 'profile' %}">Особистий
-                                    кабінет</a>
-                                </li>
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Особистий кабінет</a></li>
                                 {% if user.is_admin or user.is_staff %}
-                                    <li><a class="dropdown-item  text-white" target="_blank"
-                                           href="{% url "admin:index" %}">Адмін
-                                        панель</a></li>
+                                    <li><a class="dropdown-item" target="_blank" href="{% url "admin:index" %}">Адмін панель</a></li>
                                 {% endif %}
-
-
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <hr class="dropdown-divider">
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Вийти</a>
+                                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                                        {% csrf_token %}
+                                    </form>
                                 </li>
-                                <a class="dropdown-item text-white" href="#"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Вийти</a>
-                                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
-                                    {% csrf_token %}
-                                </form>
-
                             </ul>
                         </li>
                     {% endif %}
@@ -105,27 +87,27 @@
         </div>
     </nav>
 </header>
-<section>
 
-    <!-- Контент -->
+<section>
     <div class="container">
         <div class="row mt-1">
             <div class="col-lg-2">
-                <!-- Пустой блок на Ваше усмотрение -->
+                <!-- Пустий блок -->
             </div>
             <div class="col-lg-10">
                 {% block content %}
-
                 {% endblock %}
             </div>
         </div>
     </div>
 </section>
+
 <footer class="py-4 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Anton 2024</p>
+    <div class="container text-center">
+        <p class="m-0 text-white">Copyright &copy; Anton 2024</p>
     </div>
 </footer>
+
 <script src="{% static 'deps/js/jquery/jquery-3.7.0.min.js' %}"></script>
 <script src="{% static 'deps/js/jquery-events.js' %}"></script>
 <script src="{% static 'deps/js/jquery-ajax.js' %}"></script>
