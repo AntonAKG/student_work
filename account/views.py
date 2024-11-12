@@ -19,6 +19,19 @@ from .forms import LoginForm, RegisterForm, UserProfileForm
 
 
 class LoginClassView(LoginView):
+    """
+        LoginClassView is a class-based view for handling user login.
+
+        It inherits from Django's LoginView and customizes the context data and
+        success URL for a successful login.
+
+        Methods:
+            get_context_data: Adds custom data to the context of the login page.
+            get_success_url: Defines the URL to redirect to upon a successful login.
+
+        Attributes:
+            authentication_form: Specifies the form class to use for authentication.
+    """
     LoginView.authentication_form = LoginForm
 
     def get_context_data(self, **kwargs):
@@ -33,6 +46,18 @@ class LoginClassView(LoginView):
 
 
 class RegisterView(CreateView):
+    """
+        RegisterView handles user registration by using a form to create a new user, authenticating, and logging them in.
+
+        Attributes:
+            form_class: Specifies the form to be used for registration.
+            template_name: Path to the template used for rendering the registration form.
+            success_url: URL to redirect to upon successful registration.
+
+        Methods:
+            form_valid(self, form):
+                Processes the valid form data, authenticates the user, and logs them in.
+    """
     form_class = RegisterForm
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
@@ -51,6 +76,17 @@ class RegisterView(CreateView):
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
+    """
+        Class to display and handle the user profile page.
+
+        ProfileView extends LoginRequiredMixin to ensure only logged-in users can access this view,
+        and TemplateView to render the profile template.
+
+        Attributes:
+        -----------
+        template_name : str
+            The template to be rendered for the profile view.
+    """
     template_name = "account/profile.html"
 
     def get_context_data(self, **kwargs):
@@ -86,6 +122,28 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 class DownloadWorksView(LoginRequiredMixin, View):
+    """
+    DownloadWorksView is a class-based view that allows authenticated students to download their works in a ZIP file.
+
+    Methods
+    -------
+    get(request, *args, **kwargs)
+        Handles the GET request to generate and serve a ZIP file containing the student's works.
+
+        Parameters
+        ----------
+        request : HttpRequest
+            The GET request from the client.
+        *args : tuple
+            Additional positional arguments.
+        **kwargs : dict
+            Additional keyword arguments.
+
+        Returns
+        -------
+        HttpResponse
+            An HTTP response with a ZIP file containing the student's works. If the student is not found, it returns a 404 response.
+    """
     def get(self, request, *args, **kwargs):
         user = request.user
         student = getattr(user, 'student', None)

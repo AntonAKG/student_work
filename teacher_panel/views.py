@@ -19,10 +19,8 @@ from save_work.models import StudentWork, Student
 
 class TeacherBaseView(UserPassesTestMixin):
     """
-    Base view for teacher-related views, handling permission checks
-    and setting up common context data.
+    class TeacherBaseView(UserPassesTestMixin):
     """
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -43,6 +41,22 @@ class TeacherBaseView(UserPassesTestMixin):
 
 
 class TeacherView(TeacherBaseView, TemplateView):
+    """
+        TeacherView(TeacherBaseView, TemplateView) class
+
+        A view that handles the display of the main teacher panel. Inherits from TeacherBaseView and TemplateView.
+
+        Attributes:
+        -----------
+        template_name : str
+            The template name for the view.
+
+        Methods:
+        --------
+        get_context_data(self, **kwargs)
+            Retrieves and returns context data for rendering the template. Filters student work based on query parameters
+            such as search_query, group_id, and subject_id.
+    """
     template_name = 'teacher_panel/main_teacher_panel.html'
 
     def get_context_data(self, **kwargs):
@@ -74,6 +88,23 @@ class TeacherView(TeacherBaseView, TemplateView):
 
 
 class StudentTeacherPanel(TeacherBaseView, TemplateView):
+    """
+
+    StudentTeacherPanel is a view that inherits from TeacherBaseView and TemplateView. It is responsible for displaying the student teacher panel interface, which lists all students.
+
+    Attributes:
+        template_name (str): Path to the HTML template for rendering the student teacher panel interface.
+
+    Methods:
+        get_context_data(self, **kwargs):
+            Adds a list of all students to the context data.
+
+            Parameters:
+                **kwargs: Arbitrary keyword arguments.
+
+            Returns:
+                dict: Context data including a list of all students.
+    """
     template_name = 'teacher_panel/student_teacher_panel.html'
 
     def get_context_data(self, **kwargs):
@@ -85,6 +116,25 @@ class StudentTeacherPanel(TeacherBaseView, TemplateView):
 
 
 class TeacherPersonalView(TeacherBaseView, DetailView):
+    """
+    TeacherPersonalView class, inheriting from TeacherBaseView and DetailView, provides a detailed view of a specific student’s account, including their related work, which can be filtered and sorted based on the request parameters.
+
+    Attributes:
+        template_name (str): Specifies the template to render the student's account.
+        model (type): The model associated with the view, set to Student.
+        slug_field (str): The field used to look up the student; specified as 'slug'.
+        slug_url_kwarg (str): The URL keyword argument representing the slug; set to 'slug'.
+
+    Methods:
+        get_context_data(**kwargs):
+            Extends the context data for the view by including the student information and their associated work, filtered and sorted based on query parameters from the request.
+
+            Parameters:
+                kwargs: Arbitrary keyword arguments.
+
+            Returns:
+                dict: The updated context dictionary including the student object, filtered and sorted student work, and the current sort order.
+    """
     template_name = 'teacher_panel/student_account.html'
     model = Student
     slug_field = 'slug'
@@ -117,6 +167,23 @@ class TeacherPersonalView(TeacherBaseView, DetailView):
 
 
 class DownloadStudentWorksZipView(View):
+    """
+        A Django view that handles the process of fetching a student's works from the database,
+        compressing the works into a ZIP file, and serving the ZIP file as a downloadable response.
+
+        get(request, slug)
+            Handles GET requests to download a ZIP file containing a student's works.
+
+            Parameters:
+                request: The HTTP request object.
+                slug: The unique identifier for the student.
+
+            Raises:
+                Http404: If no works are found for the student.
+
+            Returns:
+                HttpResponse: A response object that serves the ZIP file for download.
+    """
     def get(self, request, slug):
         # Fetch the student and their works
         student = get_object_or_404(Student, slug=slug)

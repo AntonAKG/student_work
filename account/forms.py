@@ -8,11 +8,12 @@ User = get_user_model()
 
 class LoginForm(AuthenticationForm):
     """
-    redefined class
-    Father AuthenticationForm
-    I change attribute widget
-    """
+        LoginForm
+        A customized authentication form to redefine widgets and their attributes.
 
+        :param args: Variable-length argument list
+        :param kwargs: Arbitrary keyword arguments
+    """
     def __init__(self, *args, **kwargs):
         """
         redefined widget i change attribute widget
@@ -32,6 +33,38 @@ class LoginForm(AuthenticationForm):
 
 
 class RegisterForm(UserCreationForm):
+    """
+        RegisterForm
+        ------------
+        A form for registering a new user. Inherits from UserCreationForm.
+
+        Attributes:
+        -----------
+        username : CharField
+            A required field for the user's login name with a custom widget for display.
+
+        password1 : CharField
+            A required field for the user's password with a custom widget for display.
+
+        password2 : CharField
+            A required field for the password confirmation with a custom widget for display.
+
+        first_name : CharField
+            An optional field for the user's first name with a custom widget for display.
+
+        last_name : CharField
+            An optional field for the user's last name with a custom widget for display.
+
+        Meta
+        ----
+        A nested class to specify the meta-data for the RegisterForm.
+
+        model : User
+            Specifies that this form is for creating a User model instance.
+
+        fields : list
+            Lists the fields to be included in the form.
+    """
     username = forms.CharField(label='', required=True, widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Login'
@@ -63,6 +96,34 @@ class RegisterForm(UserCreationForm):
 
 
 class UserProfileForm(UserChangeForm):
+    """
+
+        UserProfileForm
+
+        A form for updating user profile information. This form inherits from
+        the UserChangeForm and provides fields for first name, last name,
+        and username. The username field is read-only.
+
+        Attributes
+        ----------
+        first_name : forms.CharField
+            A character field for the user's first name, rendered with a specific CSS class for styling.
+
+        last_name : forms.CharField
+            A character field for the user's last name, rendered with a specific CSS class for styling.
+
+        username : forms.CharField
+            A read-only character field for the user's username, rendered with a specific CSS class for styling.
+
+        Meta
+        ----
+        model : User
+            The model that this form is linked to, which is the User model.
+
+        fields : tuple
+            A tuple specifying the fields to be included in the form, which are 'first_name', 'last_name', and 'username'.
+
+    """
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
