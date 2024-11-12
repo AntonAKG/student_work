@@ -21,7 +21,7 @@ class LoginForm(AuthenticationForm):
         """
         super().__init__(*args, **kwargs)
         self.fields['username'].widget = forms.widgets.TextInput(attrs={
-            'class': 'form-control', 'placeholder': 'Електрона адреса'
+            'class': 'form-control', 'placeholder': 'Логін'
         })
         self.fields['username'].label = ''
 
