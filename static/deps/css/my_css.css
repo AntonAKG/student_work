@@ -1,5 +1,5 @@
 body {
-  background-image: url("../images/ITSTEP for DEV_1920x1282-000066.png");
+  /*background-image: url("../images/ITSTEP for DEV_1920x1282-000066.png");*/
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
@@ -60,7 +60,7 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px;
-    position: relative;
+    position: absolute;
     width: 100%;
 }
 
