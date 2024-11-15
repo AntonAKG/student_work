@@ -2,6 +2,8 @@ import os
 import os.path
 import zipfile
 
+import tempfile
+from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -33,10 +35,13 @@ class TeacherBaseView(UserPassesTestMixin):
         return redirect_to_login(self.request.get_full_path(), login_url=reverse_lazy('login'))
 
     def get_common_context_data(self, **kwargs):
-        """Add common context data for groups and subjects."""
-        context = {}
-        context['groups'] = Group.objects.all()
-        context['subjects'] = Subject.objects.all()
+        context = cache.get('common_context_data')
+        if not context:
+            context = {
+                'groups': Group.objects.all(),
+                'subjects': Subject.objects.all()
+            }
+            cache.set('common_context_data', context, timeout=60 * 15)  # Кешуємо на 15 хвилин
         return context
 
 
@@ -89,7 +94,6 @@ class TeacherView(TeacherBaseView, TemplateView):
 
 class StudentTeacherPanel(TeacherBaseView, TemplateView):
     """
-
     StudentTeacherPanel is a view that inherits from TeacherBaseView and TemplateView. It is responsible for displaying the student teacher panel interface, which lists all students.
 
     Attributes:
@@ -109,8 +113,31 @@ class StudentTeacherPanel(TeacherBaseView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_common_context_data(**kwargs)
+        search_query = self.request.GET.get('search', '')
+        group_id = self.request.GET.get('group_id')
 
-        context['students'] = Student.objects.all()
+        # Get unique groups
+        student_groups = Student.objects.values_list('group__id', 'group__group_name').distinct()
+
+        # Remove duplicates manually (if needed)
+        unique_groups = {group_id: group_name for group_id, group_name in student_groups}
+        group_options = [{'id': gid, 'group_name': gname} for gid, gname in unique_groups.items()]
+
+        # Filter students by selected group, if group_id is provided
+        students = Student.objects.all()
+        if group_id:
+            students = students.filter(group_id=group_id)
+
+        if search_query:
+            students = students.filter(
+                student__first_name__istartswith=search_query
+            ) | students.filter(
+                student__last_name__istartswith=search_query
+            )
+
+        context['student_filter'] = students
+        context['group_options'] = group_options
+        context['search_query'] = search_query
 
         return context
 
@@ -184,41 +211,26 @@ class DownloadStudentWorksZipView(View):
             Returns:
                 HttpResponse: A response object that serves the ZIP file for download.
     """
+
     def get(self, request, slug):
-        # Fetch the student and their works
         student = get_object_or_404(Student, slug=slug)
         works = StudentWork.objects.filter(student=student)
 
-        # If no works are found, raise a 404 error
         if not works:
             raise Http404("No works found for this student")
 
-        # Create a temporary directory for ZIP files
-        temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp')
-        os.makedirs(temp_dir, exist_ok=True)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            zip_filename = f"{student.student.first_name}_{student.student.last_name}_works.zip"
+            zip_path = os.path.join(temp_dir, zip_filename)
 
-        # Set up the ZIP file path
-        zip_filename = f"{student.student.first_name}_{student.student.last_name}_works.zip"
-        zip_path = os.path.join(temp_dir, zip_filename)
 
-        # Create the ZIP file
-        with zipfile.ZipFile(zip_path, 'w') as zip_file:
-            for work in works:
-                file_path = work.work.path
-                try:
+            with zipfile.ZipFile(zip_path, 'w') as zip_file:
+                for work in works:
+                    file_path = work.work.path
                     if os.path.exists(file_path):
                         zip_file.write(file_path, os.path.basename(file_path))
-                    else:
-                        print(f"File {file_path} does not exist and will be skipped.")
-                except Exception as e:
-                    print(f"An error occurred: {e}")
 
-        # Serve the ZIP file as a downloadable response
-        with open(zip_path, 'rb') as zip_file:
-            response = HttpResponse(zip_file.read(), content_type='application/zip')
-            response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
-
-        # Clean up by deleting the ZIP file after serving it
-        os.remove(zip_path)
-
-        return response
+            with open(zip_path, 'rb') as zip_file:
+                response = HttpResponse(zip_file.read(), content_type='application/zip')
+                response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
+            return response

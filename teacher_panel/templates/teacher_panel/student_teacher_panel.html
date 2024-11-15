@@ -1,52 +1,68 @@
 {% extends 'base.html' %}
 
 {% block content %}
-     <div class="container mt-5">
-        <h2 class="text-center mb-5">Student Profiles</h2>
-        
-        <div class="row justify-content-center">
-            <!-- Student Profile Cards -->
-            {% for student in students %}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
-                    <div class="card shadow-sm" style="width: 100%; max-width: 300px;">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">{{ student.student.first_name }} {{ student.student.last_name }}</h4>
-                            <p class="card-text text-muted">Group: {{ student.group.group_name }}</p>
-                            <p class="card-text">Age: {{ student.age }}</p>
-                            
-                            <!-- Profile Link -->
-                            <a href="{% url 'teacher_personal' slug=student.slug %}" class="btn btn-primary mt-3">
-                                View Profile
-                            </a>
+    <div class="row">
+        <div class="container mt-5">
+            <h2 class="text-center mb-5">Student Profiles</h2>
+            <form method="GET" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Пошук по студентам..."
+                           value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">Пошук</button>
+                </div>
+
+                <select name="group_id" class="form-select" onchange="this.form.submit()" style="margin-top: 5px">
+                    <option value="">Всі групи</option>
+                    {% for group in group_options %}
+                        <option value="{{ group.id }}"
+                                {% if request.GET.group_id == group.id|stringformat:"s" %}selected{% endif %}>
+                            {{ group.group_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            <div class="row justify-content-center">
+                {% for student in student_filter %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex justify-content-center">
+                        <div class="card shadow-sm" style="width: 100%; max-width: 300px;">
+                            <div class="card-body text-center">
+                                <h4 class="card-title">{{ student.student.first_name }} {{ student.student.last_name }}</h4>
+                                <p class="card-text text-muted">Група: {{ student.group.group_name }}</p>
+                                <p class="card-text">Років: {{ student.age }}</p>
+
+                                <a href="{% url 'teacher_personal' slug=student.slug %}" class="btn btn-primary mt-3">
+                                    Переглянути профіль
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-
     <style>
-    .card {
-        border-radius: 8px;
-        transition: transform 0.2s;
-    }
+        .card {
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
 
-    .card:hover {
-        transform: scale(1.05);
-    }
+        .card:hover {
+            transform: scale(1.05);
+        }
 
-    .card-title {
-        font-weight: 700;
-    }
+        .card-title {
+            font-weight: 700;
+        }
 
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
 
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
     </style>
 {% endblock %}
