@@ -3,6 +3,9 @@ import os.path
 import zipfile
 
 import tempfile
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -13,8 +16,11 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, FormView
+from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 
+from .forms import CreateUserForm, AssignStudentForm
 from save_work.models import Group, Subject
 from save_work.models import StudentWork, Student
 
@@ -23,12 +29,13 @@ class TeacherBaseView(UserPassesTestMixin):
     """
     class TeacherBaseView(UserPassesTestMixin):
     """
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
     def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_superuser
+        return self.request.user.is_staff or self.request.user.is_superuser # Перевірка чи користувач є вчителем
 
     def handle_no_permission(self):
         # Redirect to the login page if the user lacks permission
@@ -193,6 +200,61 @@ class TeacherPersonalView(TeacherBaseView, DetailView):
         return context
 
 
+
+class CreateStudentView(FormView):
+    template_name = 'teacher_panel/student_create_account.html'
+    success_url = reverse_lazy('student_teacher_panel')
+
+    def get(self, request, *args, **kwargs):
+        user_form = CreateUserForm()
+        student_form = AssignStudentForm()
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'student_form': student_form,
+        })
+
+    def post(self, request, *args, **kwargs):
+        user_form = CreateUserForm(request.POST)
+        student_form = AssignStudentForm(request.POST)
+
+        if user_form.is_valid() and student_form.is_valid():
+            # Створення користувача
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+
+            # Прив'язка до студента
+            student = student_form.save(commit=False)
+            student.student = user
+            student.save()
+
+            return redirect(self.success_url)
+
+        # Повернення форм у разі помилок
+        return render(request, self.template_name, {
+            'user_form': user_form,
+            'student_form': student_form,
+        })
+
+    def get_student_form(self):
+        """
+        Ініціалізація студентської форми з фільтрацією.
+        """
+        form = self.student_form_class()
+        User = get_user_model()  # Динамічно отримуємо кастомну модель користувача
+        student_group, created = Group.objects.get_or_create(group_name='student')  # Використовуйте get_or_create
+        students = User.objects.filter(groups=student_group)
+        form.fields['student'].queryset = students  # Поле називається 'student', а не 'user'
+        return form
+
+    def assign_student_group(self, user):
+        """
+        Додаємо користувача до групи "student".
+        """
+        student_group, created = Group.objects.get_or_create(name='student')
+        student_group.user_set.add(user)
+
+
 class DownloadStudentWorksZipView(View):
     """
         A Django view that handles the process of fetching a student's works from the database,
@@ -222,7 +284,6 @@ class DownloadStudentWorksZipView(View):
         with tempfile.TemporaryDirectory() as temp_dir:
             zip_filename = f"{student.student.first_name}_{student.student.last_name}_works.zip"
             zip_path = os.path.join(temp_dir, zip_filename)
-
 
             with zipfile.ZipFile(zip_path, 'w') as zip_file:
                 for work in works:

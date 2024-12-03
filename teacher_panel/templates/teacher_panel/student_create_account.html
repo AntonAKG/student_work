@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+	<h2>Додати студента</h2>
+    <form method="post">
+        {% csrf_token %}
+        <h3>Інформація про користувача</h3>
+        {{ user_form.as_p }}
+        <h3>Деталі студента</h3>
+        {{ student_form.as_p }}
+        <button type="submit">Зберегти</button>
+    </form>
+    
+{% endblock %}

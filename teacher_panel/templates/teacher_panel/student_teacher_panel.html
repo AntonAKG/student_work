@@ -10,7 +10,6 @@
                            value="{{ search_query }}">
                     <button class="btn btn-primary" type="submit">Пошук</button>
                 </div>
-
                 <select name="group_id" class="form-select" onchange="this.form.submit()" style="margin-top: 5px">
                     <option value="">Всі групи</option>
                     {% for group in group_options %}

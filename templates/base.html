@@ -14,7 +14,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'deps/images/ITSTEP for DEV_32x32-000033.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'deps/images/ITSTEP for DEV_16x16-000066.png' %}">
     <link rel="manifest" href="{% static 'deps/favicon/site.webmanifest' %}">
-    <title>Home</title>
+
+
+
+
 </head>
 
 <body>
@@ -54,7 +57,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'teacher_panel' %}">Головна</a></li>
                                 <li><a class="dropdown-item" href="{% url 'student_teacher_panel' %}">Студенти</a></li>
-                                <li><a class="dropdown-item" href="#">Налаштування</a></li>
+                                <li><a class="dropdown-item" href="{% url 'create_user' %}">Створити студентський акаунт</a></li>
                             </ul>
                         </li>
                     {% endif %}
