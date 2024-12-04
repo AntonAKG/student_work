@@ -38,9 +38,8 @@
                             Інформація
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Доставка і оплата</a></li>
-                            <li><a class="dropdown-item" href="#">Контактна інформація</a></li>
-                            <li><a class="dropdown-item" href="#">Про нас</a></li>
+                            <li><a class="dropdown-item" href="{% url 'contact' %}">Контактна інформація</a></li>
+                            <li><a class="dropdown-item" href="{% url 'about' %}">Про нас</a></li>
                         </ul>
                     </li>
                     {% if not user.is_authenticated %}

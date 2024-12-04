@@ -3,7 +3,7 @@
 
 
 {% block content %}
-	<h2>Додати студента</h2>
+    <h2>Додати студента</h2>
     <form method="post">
         {% csrf_token %}
         <h3>Інформація про користувача</h3>
@@ -12,5 +12,91 @@
         {{ student_form.as_p }}
         <button type="submit">Зберегти</button>
     </form>
-    
+
+    <style>
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Заголовки */
+        h2, h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        /* Поля форми */
+        form p {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #5a9;
+            outline: none;
+            box-shadow: 0 0 5px rgba(90, 169, 105, 0.5);
+        }
+
+        /* Кнопка */
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Декоративні елементи */
+        form h3 {
+            margin-top: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            font-size: 18px;
+        }
+
+        /* Вирівнювання */
+        form p {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Для мобільних пристроїв */
+        @media (max-width: 768px) {
+            form {
+                padding: 15px;
+            }
+        }
+
+    </style>
+
 {% endblock %}
