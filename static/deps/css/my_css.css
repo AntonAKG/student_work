@@ -60,7 +60,7 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px;
-    position: relative;
+    position: absolute;
     width: 100%;
 }
 
