@@ -26,3 +26,6 @@ class AssignStudentForm(forms.ModelForm):
             'group': "Група",
             'age': "Вік",
         }
+
+class UploadStudentFileForm(forms.Form):
+    docx_file = forms.FileField(label="Upload DOCX File", required=True)

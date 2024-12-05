@@ -19,6 +19,7 @@ from django.views import View
 from django.views.generic import TemplateView, DetailView, FormView
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
+from docx import Document
 
 from .forms import CreateUserForm, AssignStudentForm
 from save_work.models import Group, Subject
@@ -253,6 +254,59 @@ class CreateStudentView(FormView):
         """
         student_group, created = Group.objects.get_or_create(name='student')
         student_group.user_set.add(user)
+
+
+class CreateStudentByFileView(FormView):
+    template_name = 'teacher_panel/create_student_account_by_file.html'
+    form_class = UploadStudentFileForm
+    success_url = reverse_lazy('student_teacher_panel')
+
+    def form_valid(self, form):
+        docx_file = form.cleaned_data['docx_file']
+        document = Document(docx_file)
+
+        # Парсинг таблиці
+        tables_data = []
+        for table in document.tables:
+            for row in table.rows:
+                row_data = [cell.text.strip() for cell in row.cells]
+                tables_data.append(row_data)
+
+        # Створення студентів
+        for data in tables_data:
+            try:
+                full_name = data[0].split(' ')
+                surname, name = full_name[0], full_name[1]
+                username = data[1]
+                email = data[2]
+                password = data[3]
+                group_name = data[4]
+
+                # Перевірка, чи існує група
+                group, created = Group.objects.get_or_create(group_name=group_name)
+
+                # Створення користувача
+                user, created = User.objects.get_or_create(
+                    username=username,
+                    defaults={
+                        'first_name': name,
+                        'last_name': surname,
+                        'email': email,
+                    }
+                )
+                if created:
+                    user.set_password(password)
+                    user.save()
+
+                # Створення студента
+                Student.objects.create(student=user, group=group, age=18)  # Вік задається умовно
+            except IndexError:
+                # Якщо в таблиці не вистачає даних
+                continue
+
+        return super().form_valid(form)
+
+
 
 
 class DownloadStudentWorksZipView(View):
