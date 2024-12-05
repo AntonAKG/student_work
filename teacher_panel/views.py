@@ -3,6 +3,7 @@ import os.path
 import zipfile
 
 import tempfile
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -19,9 +20,10 @@ from django.views import View
 from django.views.generic import TemplateView, DetailView, FormView
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
+from docx2python import docx2python
 from docx import Document
 
-from .forms import CreateUserForm, AssignStudentForm
+from .forms import CreateUserForm, AssignStudentForm, UploadStudentFileForm
 from save_work.models import Group, Subject
 from save_work.models import StudentWork, Student
 
@@ -36,7 +38,7 @@ class TeacherBaseView(UserPassesTestMixin):
         return super().dispatch(*args, **kwargs)
 
     def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_superuser # Перевірка чи користувач є вчителем
+        return self.request.user.is_staff or self.request.user.is_superuser  # Перевірка чи користувач є вчителем
 
     def handle_no_permission(self):
         # Redirect to the login page if the user lacks permission
@@ -201,7 +203,6 @@ class TeacherPersonalView(TeacherBaseView, DetailView):
         return context
 
 
-
 class CreateStudentView(FormView):
     template_name = 'teacher_panel/student_create_account.html'
     success_url = reverse_lazy('student_teacher_panel')
@@ -259,54 +260,45 @@ class CreateStudentView(FormView):
 class CreateStudentByFileView(FormView):
     template_name = 'teacher_panel/create_student_account_by_file.html'
     form_class = UploadStudentFileForm
-    success_url = reverse_lazy('student_teacher_panel')
+    success_url = reverse_lazy('teacher_panel')
 
     def form_valid(self, form):
-        docx_file = form.cleaned_data['docx_file']
-        document = Document(docx_file)
 
-        # Парсинг таблиці
+        docx_file = ''
+
+        for el in self.request.FILES.values():
+            docx_file = el
+
+        doc = Document(docx_file)
+
+        group_name = slugify(docx_file.name.split('.')[0])
+
+        group, created = Group.objects.get_or_create(group_name=group_name, group_slug=group_name)
+
+        User = get_user_model()
+
         tables_data = []
-        for table in document.tables:
+
+        for table in doc.tables:
+            table_content = []
             for row in table.rows:
-                row_data = [cell.text.strip() for cell in row.cells]
-                tables_data.append(row_data)
+                row_data = [cell.text for cell in row.cells]
+                table_content.append(row_data)
+            tables_data.append(table_content)
+        print(tables_data)
 
-        # Створення студентів
-        for data in tables_data:
-            try:
-                full_name = data[0].split(' ')
-                surname, name = full_name[0], full_name[1]
-                username = data[1]
-                email = data[2]
-                password = data[3]
-                group_name = data[4]
+        for el in tables_data[0]:
+            surname = el[0].split(' ')[0]
+            name = el[0].split(' ')[1]
+            login = el[1]
+            password = el[3]
+            email = el[2]
 
-                # Перевірка, чи існує група
-                group, created = Group.objects.get_or_create(group_name=group_name)
-
-                # Створення користувача
-                user, created = User.objects.get_or_create(
-                    username=username,
-                    defaults={
-                        'first_name': name,
-                        'last_name': surname,
-                        'email': email,
-                    }
-                )
-                if created:
-                    user.set_password(password)
-                    user.save()
-
-                # Створення студента
-                Student.objects.create(student=user, group=group, age=18)  # Вік задається умовно
-            except IndexError:
-                # Якщо в таблиці не вистачає даних
-                continue
+            user = User.objects.create_user(username=login, email=email, password=password, first_name=name,
+                                            last_name=surname)
+            Student.objects.create(student=user, group=group, age=12)
 
         return super().form_valid(form)
-
-
 
 
 class DownloadStudentWorksZipView(View):
