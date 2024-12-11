@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="content">
+        {% for el in groups %}
+            <p>{{ el.group_name }}</p>
+        {% endfor %}
+    </div>
+
+    <style>
+        /* Контейнер */
+        .content {
+            width: 90%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Стилі для елементів списку */
+        .content p {
+            font-size: 1.2rem;
+            color: #333;
+            padding: 10px;
+            margin: 0 0 10px 0;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Взаємодія */
+        .content p:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* Останній елемент без нижньої межі */
+        .content p:last-child {
+            border-bottom: none;
+        }
+
+        /* Медіа-запит для адаптивності */
+        @media (max-width: 500px) {
+            .content p {
+                font-size: 1rem;
+                padding: 8px;
+            }
+        }
+    </style>
+{% endblock %}

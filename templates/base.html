@@ -56,8 +56,10 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'teacher_panel' %}">Головна</a></li>
                                 <li><a class="dropdown-item" href="{% url 'student_teacher_panel' %}">Студенти</a></li>
+                                <li><a class="dropdown-item" href="{% url 'group_list' %}">Список груп</a></li>
                                 <li><a class="dropdown-item" href="{% url 'create_user' %}">Створити студентський акаунт</a></li>
                                 <li><a class="dropdown-item" href="{% url 'create_user_by_file' %}">Завантажити файл для створення студентських акаунтів</a></li>
+                                <li><a class="dropdown-item" href="{% url 'create_teacher' %}">Створити акаунт викладача</a></li>
                             </ul>
                         </li>
                     {% endif %}
@@ -98,8 +100,9 @@
                 <!-- Пустий блок -->
             </div>
             <div class="col-lg-10">
-                {% block content %}
-                {% endblock %}
+                    {% block content %}
+                    {% endblock %}
+
             </div>
         </div>
     </div>

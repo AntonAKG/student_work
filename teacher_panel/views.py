@@ -19,13 +19,11 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import TemplateView, DetailView, FormView
 from django.contrib.auth import get_user_model
-from django.urls import reverse_lazy
 from docx2python import docx2python
 from docx import Document
 
-from .forms import CreateUserForm, AssignStudentForm, UploadStudentFileForm
-from save_work.models import Group, Subject
-from save_work.models import StudentWork, Student
+from .forms import CreateUserForm, AssignStudentForm, UploadStudentFileForm, CreateTeacherForm
+from save_work.models import StudentWork, Student, Group, Subject, Teacher
 
 
 class TeacherBaseView(UserPassesTestMixin):
@@ -203,7 +201,7 @@ class TeacherPersonalView(TeacherBaseView, DetailView):
         return context
 
 
-class CreateStudentView(FormView):
+class CreateStudentView(FormView, TeacherBaseView):
     template_name = 'teacher_panel/student_create_account.html'
     success_url = reverse_lazy('student_teacher_panel')
 
@@ -257,7 +255,7 @@ class CreateStudentView(FormView):
         student_group.user_set.add(user)
 
 
-class CreateStudentByFileView(FormView):
+class CreateStudentByFileView(FormView, TeacherBaseView):
     template_name = 'teacher_panel/create_student_account_by_file.html'
     form_class = UploadStudentFileForm
     success_url = reverse_lazy('teacher_panel')
@@ -285,7 +283,6 @@ class CreateStudentByFileView(FormView):
                 row_data = [cell.text for cell in row.cells]
                 table_content.append(row_data)
             tables_data.append(table_content)
-        print(tables_data)
 
         for el in tables_data[0]:
             surname = el[0].split(' ')[0]
@@ -341,3 +338,22 @@ class DownloadStudentWorksZipView(View):
                 response = HttpResponse(zip_file.read(), content_type='application/zip')
                 response['Content-Disposition'] = f'attachment; filename="{zip_filename}"'
             return response
+
+class GroupListView(TeacherBaseView, TemplateView):
+    template_name = 'teacher_panel/group_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_common_context_data(**kwargs)
+        groups = Group.objects.all()
+        context['groups'] = groups
+        return context
+
+class CreateTeacherView(FormView):
+    template_name = 'teacher_panel/create_teacher_account.html'
+    form_class = CreateTeacherForm
+    success_url = reverse_lazy('teacher_panel')
+
+    def form_valid(self, form):
+        user = form.save()
+        Teacher.objects.create(teacher=user)
+        return super().form_valid(form)

@@ -1,5 +1,6 @@
 footer {
-    position: fixed;
+    position: page;
+    margin-top: 10px;
     bottom: 0;
     width: 100%;
     background-color: #343a40;

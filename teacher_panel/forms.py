@@ -1,5 +1,5 @@
 from django import forms
-from save_work.models import Student, Group
+from save_work.models import Student, Group, Teacher
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -29,3 +29,24 @@ class AssignStudentForm(forms.ModelForm):
 
 class UploadStudentFileForm(forms.Form):
     docx_file = forms.FileField(label="Upload DOCX File", required=True)
+
+
+class CreateTeacherForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label="Пароль")
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        labels = {
+            'username': "Ім'я користувача",
+            'email': "Email",
+            'first_name': "Ім'я",
+            'last_name': "Прізвище",
+        }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
